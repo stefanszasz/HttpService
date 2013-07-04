@@ -19,7 +19,7 @@ namespace BernalService
                 {
                     RegisterService service = new RegisterService();
                     service.Name = "BernalService";
-                    service.RegType = "_http._tcp";
+                    service.RegType = "_ws._tcp";
                     service.ReplyDomain = "local.";
                     service.Port = 990;
                     service.Register();
