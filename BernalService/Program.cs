@@ -19,7 +19,7 @@ namespace BernalService
                 Console.WriteLine("Server started!");
 
                 var service = new RegisterService();
-                service.Name = "Bernal service Sese";
+                service.Name = "BernalService "+ Environment.MachineName;
                 service.RegType = "_ws._tcp";
                 service.ReplyDomain = "local.";
                 service.Port = 990;
