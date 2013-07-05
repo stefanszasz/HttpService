@@ -16,6 +16,14 @@ namespace BernalService
                     response.ContentType = "application/json";
                     return response;
                 };
+
+            Post["bernal_gta/0/gtas/get"] = param =>
+                {
+                    string doorList = DoorList();
+                    var response = (Response)doorList;
+                    response.ContentType = "application/json";
+                    return response;
+                };
         }
 
         public string Root(dynamic @params)
@@ -32,6 +40,11 @@ namespace BernalService
                 return
                     "{ \"success\": true, \"user\": {\"Key\": 233, \"Value\": { \"Name\": \"someName\", \"Roles\": \"Role\", \"EMail\": \"email@email.com\", \"Phone\": \"122-334-44\", \"Address\": \"address\", \"Comment\": \"comment...\", \"WebAccess\": true } } }";
             }
+        }
+
+        public string DoorList()
+        {
+            return "{\"Addresses\":[{\"Key\": 11223344,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Hofeinfahrt \",\"Comment\": \"G501-D\"}},{\"Key\": 1321312,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Haupttor \",\"Comment\": \"G501-D\"}}]}";
         }
     }
 }
