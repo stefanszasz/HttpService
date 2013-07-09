@@ -54,17 +54,9 @@ namespace BernalService
                 return response;
             };
 
-            Post["/bernal_gta/11223344/opstatus"] = param =>
+            Post["/bernal_gta/{key}/opstatus"] = param =>
             {
                 string doorList = DoorStatus("11223344");
-                var response = (Response)doorList;
-                response.ContentType = "application/json";
-                return response;
-            };
-
-            Post["/bernal_gta/1321312/opstatus"] = param =>
-            {
-                string doorList = DoorStatus("1321312");
                 var response = (Response)doorList;
                 response.ContentType = "application/json";
                 return response;
@@ -106,6 +98,7 @@ namespace BernalService
 
         public string SetVentilation(dynamic @params)
         {
+            string value = @params.key;
             return "{\"status\":0,\"data\":[]}";
         }
 
@@ -130,9 +123,9 @@ namespace BernalService
             return "{\"Addresses\":[{\"Key\": 11223344,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Hofeinfahrt \",\"Comment\": \"G501-D\"}},{\"Key\": 1321312,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Haupttor \",\"Comment\": \"G501-D\"}}]}";
         }
 
-        public string DoorStatus(string key)
+        public string DoorStatus(dynamic @params)
         {
-            string status = JsonConvert.SerializeObject(DoorsStatuses[key]);
+            string status = JsonConvert.SerializeObject(DoorsStatuses[@params.key]);
             return status;
         }
 
