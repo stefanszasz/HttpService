@@ -45,24 +45,8 @@ namespace BernalService
             Post["/bernal_gta/{key}/hostcontroller/set/light"] = SetLight;
 
             Post["/bernal_gta/{key}/hostcontroller/set/relay"] = SetRelay;
-        }
 
-        public string SetVentilation(dynamic @params)
-        {
-            string value = @params.key;
-
-            if (DoorsStatuses[@params.key].D0902[0] == 0 && DoorsStatuses[@params.key].D0902[1] == 0)
-            {
-                DoorsStatuses[@params.key].D0902[0] = 1;
-                DoorsStatuses[@params.key].D0902[1] = 1;
-            }
-            else
-            {
-                DoorsStatuses[@params.key].D0902[0] = 0;
-                DoorsStatuses[@params.key].D0902[0] = 0;
-            }
-
-            return "{\"status\":0,\"data\":[]}";
+            Post["/bernal_gta/{key}/hostcontroller/set/relay"] = SetDoor;
         }
 
         public string Root(dynamic @params)
@@ -91,6 +75,34 @@ namespace BernalService
             string key = @params.key;
             string status = JsonConvert.SerializeObject(DoorsStatuses[key]);
             return status;
+        }
+
+        public string SetDoor(dynamic @params)
+        {
+            byte doorState = DoorsStatuses[@params.key].D0802;
+
+            switch (doorState)
+            {
+                case 0: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.CLOSED;
+                case 1: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
+                case 2: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
+                case 3: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
+                case 4: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
+                case 5: DoorsStatuses[@params.key].D0802 = 6; break;//return DoorStatuses.OPEN;
+                case 6: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
+                case 7: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
+                case 8: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
+                case 9: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
+                case 11: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
+                case 12: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.VENTILATING;
+                case 13: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
+                case 14: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
+                case 15: break; //return DoorStatuses.REVERSEING;
+                case 16: break; //return DoorStatuses.LEARNING;
+                default: break;
+            }
+
+            return "{ \"status\":0,\"data\":[] }";
         }
 
         public string SetLight(dynamic @params)
@@ -123,6 +135,24 @@ namespace BernalService
             }
 
             return "{ \"status\":0,\"data\":[] }";
+        }
+
+        public string SetVentilation(dynamic @params)
+        {
+            string value = @params.key;
+
+            if (DoorsStatuses[@params.key].D0902[0] == 0 && DoorsStatuses[@params.key].D0902[1] == 0)
+            {
+                DoorsStatuses[@params.key].D0902[0] = 1;
+                DoorsStatuses[@params.key].D0902[1] = 1;
+            }
+            else
+            {
+                DoorsStatuses[@params.key].D0902[0] = 0;
+                DoorsStatuses[@params.key].D0902[0] = 0;
+            }
+
+            return "{\"status\":0,\"data\":[]}";
         }
     }
 }
