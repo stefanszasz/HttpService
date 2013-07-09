@@ -8,17 +8,18 @@ namespace BernalService
 {
     public class DoorStatus
     {
+
         public int status;
-        public byte D0802;
-        public byte[] D0902 = new byte[2];
-        public byte[] D0903 = new byte[2];
-        public byte[] D0904 = new byte[2];
-        public byte P0501;
-        public byte P0604;
-        public byte P0401;
-        public byte[] D0503 = new byte[4];
-        public byte P0404;
-        public byte[] D0504 = new byte[4];
+        public int D0802;
+        public int[] D0902 = new int[2];
+        public int[] D0903 = new int[2];
+        public int[] D0904 = new int[2];
+        public int P0501;
+        public int P0604;
+        public int P0401;
+        public int[] D0503 = new int[4];
+        public int P0404;
+        public int[] D0504 = new int[4];
     };
 
     public class LoginModule : NancyModule
@@ -135,7 +136,9 @@ namespace BernalService
         public string DoorStatus(string key)
         {
             string status = JsonConvert.SerializeObject(doorsStatuses[key]);
+
             return status;
+
         }
 
         public string SetLight(string key)
