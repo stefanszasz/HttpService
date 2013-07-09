@@ -6,21 +6,6 @@ using Newtonsoft.Json;
 
 namespace BernalService
 {
-    public class DoorStatus
-    {
-
-        public int status;
-        public int D0802;
-        public int[] D0902 = new int[2];
-        public int[] D0903 = new int[2];
-        public int[] D0904 = new int[2];
-        public int P0501;
-        public int P0604;
-        public int P0401;
-        public int[] D0503 = new int[4];
-        public int P0404;
-        public int[] D0504 = new int[4];
-    };
 
     public class LoginModule : NancyModule
     {
@@ -36,7 +21,6 @@ namespace BernalService
                 doorStatus1.D0902[1] = 0;
 
                 DoorsStatuses.Add("11223344", doorStatus1);
-                doorsStatuses.Add("11223344", doorStatus1);
 
                 DoorStatus doorStatus2 = new DoorStatus();
                 doorStatus2.D0902[0] = 0;
