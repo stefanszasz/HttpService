@@ -24,6 +24,13 @@ namespace BernalService
                     response.ContentType = "application/json";
                     return response;
                 };
+
+            Post["bernal_gta/{key}/hostcontroller/set/ventilation"] = SetVentilation;
+        }
+
+        public string SetVentilation(dynamic @params)
+        {
+            return "{\"status\":0,\"data\":[]}";
         }
 
         public string Root(dynamic @params)
