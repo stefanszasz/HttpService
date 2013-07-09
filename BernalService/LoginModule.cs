@@ -36,69 +36,21 @@ namespace BernalService
                 return response;
             };
 
-            Post["bernal_gta/0/gtas/get"] = param =>
-                {
-                    string doorList = DoorList();
-                    var response = (Response)doorList;
-                    response.ContentType = "application/json";
-                    return response;
-                };
-
+            Post["bernal_gta/0/gtas/get"] = DoorList;
+                
             Post["bernal_gta/{key}/hostcontroller/set/ventilation"] = SetVentilation;
 
-            Post["bernal_gta/0/gtas/get"] = param =>
-            {
-                string doorList = DoorList();
-                var response = (Response)doorList;
-                response.ContentType = "application/json";
-                return response;
-            };
+            Post["/bernal_gta/{key}/opstatus"] = DoorStatus;
 
-            Post["/bernal_gta/{key}/opstatus"] = param =>
-            {
-                string doorList = DoorStatus("11223344");
-                var response = (Response)doorList;
-                response.ContentType = "application/json";
-                return response;
-            };
+            Post["/bernal_gta/{key}/hostcontroller/set/light"] = SetLight;
 
-            Post["/bernal_gta/11223344/hostcontroller/set/light"] = param =>
-            {
-                string doorList = DoorStatus("11223344");
-                var response = (Response)doorList;
-                response.ContentType = "application/json";
-                return response;
-            };
-
-            Post["/bernal_gta/1321312/hostcontroller/set/light"] = param =>
-            {
-                var stat = SetLight("1321312");
-                var response = (Response)stat;
-                response.ContentType = "application/json";
-                return response;
-            };
-
-
-            Post["/bernal_gta/11223344/hostcontroller/set/relay"] = param =>
-            {
-                string doorList = DoorStatus("11223344");
-                var response = (Response)doorList;
-                response.ContentType = "application/json";
-                return response;
-            };
-
-            Post["/bernal_gta/1321312/hostcontroller/set/relay"] = param =>
-            {
-                var stat = SetLight("1321312");
-                var response = (Response)stat;
-                response.ContentType = "application/json";
-                return response;
-            };
+            Post["/bernal_gta/{key}/hostcontroller/set/relay"] = SetRelay;
         }
 
         public string SetVentilation(dynamic @params)
         {
             string value = @params.key;
+
             return "{\"status\":0,\"data\":[]}";
         }
 
@@ -118,44 +70,45 @@ namespace BernalService
             }
         }
 
-        public string DoorList()
+        public string DoorList(dynamic @params)
         {
             return "{\"Addresses\":[{\"Key\": 11223344,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Hofeinfahrt \",\"Comment\": \"G501-D\"}},{\"Key\": 1321312,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Haupttor \",\"Comment\": \"G501-D\"}}]}";
         }
 
         public string DoorStatus(dynamic @params)
         {
-            string status = JsonConvert.SerializeObject(DoorsStatuses[@params.key]);
+            string key = @params.key;
+            string status = JsonConvert.SerializeObject(DoorsStatuses[key]);
             return status;
         }
 
-        public string SetLight(string key)
+        public string SetLight(dynamic @params)
         {
-            if (DoorsStatuses[key].D0903[0] == 0 && DoorsStatuses[key].D0903[1] == 0)
+            if (DoorsStatuses[@params.key].D0903[0] == 0 && DoorsStatuses[@params.key].D0903[1] == 0)
             {
-                DoorsStatuses[key].D0903[0] = 1;
-                DoorsStatuses[key].D0903[1] = 1;
+                DoorsStatuses[@params.key].D0903[0] = 1;
+                DoorsStatuses[@params.key].D0903[1] = 1;
             }
             else
             {
-                DoorsStatuses[key].D0903[0] = 0;
-                DoorsStatuses[key].D0903[0] = 0;
+                DoorsStatuses[@params.key].D0903[0] = 0;
+                DoorsStatuses[@params.key].D0903[0] = 0;
             }
 
             return "{ \"status\":0,\"data\":[] }";
         }
 
-        public string SetRelay(string key)
+        public string SetRelay(dynamic @params)
         {
-            if (DoorsStatuses[key].D0904[0] == 0 && DoorsStatuses[key].D0904[1] == 0)
+            if (DoorsStatuses[@params.key].D0904[0] == 0 && DoorsStatuses[@params.key].D0904[1] == 0)
             {
-                DoorsStatuses[key].D0904[0] = 1;
-                DoorsStatuses[key].D0904[1] = 1;
+                DoorsStatuses[@params.key].D0904[0] = 1;
+                DoorsStatuses[@params.key].D0904[1] = 1;
             }
             else
             {
-                DoorsStatuses[key].D0904[0] = 0;
-                DoorsStatuses[key].D0904[0] = 0;
+                DoorsStatuses[@params.key].D0904[0] = 0;
+                DoorsStatuses[@params.key].D0904[0] = 0;
             }
 
             return "{ \"status\":0,\"data\":[] }";
