@@ -51,6 +51,17 @@ namespace BernalService
         {
             string value = @params.key;
 
+            if (DoorsStatuses[@params.key].D0902[0] == 0 && DoorsStatuses[@params.key].D0902[1] == 0)
+            {
+                DoorsStatuses[@params.key].D0902[0] = 1;
+                DoorsStatuses[@params.key].D0902[1] = 1;
+            }
+            else
+            {
+                DoorsStatuses[@params.key].D0902[0] = 0;
+                DoorsStatuses[@params.key].D0902[0] = 0;
+            }
+
             return "{\"status\":0,\"data\":[]}";
         }
 
