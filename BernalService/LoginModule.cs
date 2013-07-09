@@ -24,25 +24,25 @@ namespace BernalService
 
     public class LoginModule : NancyModule
     {
-        static Dictionary<string, DoorStatus> doorsStatuses = new Dictionary<string, DoorStatus>(2);
+        static readonly Dictionary<string, DoorStatus> DoorsStatuses = new Dictionary<string, DoorStatus>(2);
 
         public LoginModule()
         {
 
-            if (!doorsStatuses.ContainsKey("11223344"))
+            if (!DoorsStatuses.ContainsKey("11223344"))
             {
                 DoorStatus doorStatus1 = new DoorStatus();
                 doorStatus1.D0902[0] = 0;
                 doorStatus1.D0902[1] = 0;
 
+                DoorsStatuses.Add("11223344", doorStatus1);
                 doorsStatuses.Add("11223344", doorStatus1);
 
                 DoorStatus doorStatus2 = new DoorStatus();
                 doorStatus2.D0902[0] = 0;
                 doorStatus2.D0902[1] = 0;
 
-                
-                doorsStatuses.Add("1321312",doorStatus2);
+                DoorsStatuses.Add("1321312", doorStatus2);
             }
 
             Get["/"] = Root;
@@ -55,11 +55,21 @@ namespace BernalService
             };
 
             Post["bernal_gta/0/gtas/get"] = param =>
-            {
+                {
                     string doorList = DoorList();
                     var response = (Response)doorList;
                     response.ContentType = "application/json";
                     return response;
+                };
+
+            Post["bernal_gta/{key}/hostcontroller/set/ventilation"] = SetVentilation;
+
+            Post["bernal_gta/0/gtas/get"] = param =>
+            {
+                string doorList = DoorList();
+                var response = (Response)doorList;
+                response.ContentType = "application/json";
+                return response;
             };
 
             Post["/bernal_gta/11223344/opstatus"] = param =>
@@ -112,6 +122,11 @@ namespace BernalService
             };
         }
 
+        public string SetVentilation(dynamic @params)
+        {
+            return "{\"status\":0,\"data\":[]}";
+        }
+
         public string Root(dynamic @params)
         {
             return "";
@@ -135,7 +150,7 @@ namespace BernalService
 
         public string DoorStatus(string key)
         {
-            string status = JsonConvert.SerializeObject(doorsStatuses[key]);
+            string status = JsonConvert.SerializeObject(DoorsStatuses[key]);
 
             return status;
 
@@ -143,15 +158,15 @@ namespace BernalService
 
         public string SetLight(string key)
         {
-            if (doorsStatuses[key].D0903[0] == 0 && doorsStatuses[key].D0903[1] == 0)
+            if (DoorsStatuses[key].D0903[0] == 0 && DoorsStatuses[key].D0903[1] == 0)
             {
-                doorsStatuses[key].D0903[0] = 1;
-                doorsStatuses[key].D0903[1] = 1;
+                DoorsStatuses[key].D0903[0] = 1;
+                DoorsStatuses[key].D0903[1] = 1;
             }
             else
             {
-                doorsStatuses[key].D0903[0] = 0;
-                doorsStatuses[key].D0903[0] = 0;
+                DoorsStatuses[key].D0903[0] = 0;
+                DoorsStatuses[key].D0903[0] = 0;
             }
 
             return "{ \"status\":0,\"data\":[] }";
@@ -159,15 +174,15 @@ namespace BernalService
 
         public string SetRelay(string key)
         {
-            if (doorsStatuses[key].D0904[0] == 0 && doorsStatuses[key].D0904[1] == 0)
+            if (DoorsStatuses[key].D0904[0] == 0 && DoorsStatuses[key].D0904[1] == 0)
             {
-                doorsStatuses[key].D0904[0] = 1;
-                doorsStatuses[key].D0904[1] = 1;
+                DoorsStatuses[key].D0904[0] = 1;
+                DoorsStatuses[key].D0904[1] = 1;
             }
             else
             {
-                doorsStatuses[key].D0904[0] = 0;
-                doorsStatuses[key].D0904[0] = 0;
+                DoorsStatuses[key].D0904[0] = 0;
+                DoorsStatuses[key].D0904[0] = 0;
             }
 
             return "{ \"status\":0,\"data\":[] }";
