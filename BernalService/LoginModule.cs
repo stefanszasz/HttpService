@@ -115,7 +115,7 @@ namespace BernalService
             else
             {
                 DoorsStatuses[@params.key].D0903[0] = 0;
-                DoorsStatuses[@params.key].D0903[0] = 0;
+                DoorsStatuses[@params.key].D0903[1] = 0;
             }
 
             return "{ \"status\":0,\"data\":[] }";
@@ -131,7 +131,7 @@ namespace BernalService
             else
             {
                 DoorsStatuses[@params.key].D0904[0] = 0;
-                DoorsStatuses[@params.key].D0904[0] = 0;
+                DoorsStatuses[@params.key].D0904[1] = 0;
             }
 
             return "{ \"status\":0,\"data\":[] }";
@@ -149,7 +149,7 @@ namespace BernalService
             else
             {
                 DoorsStatuses[@params.key].D0902[0] = 0;
-                DoorsStatuses[@params.key].D0902[0] = 0;
+                DoorsStatuses[@params.key].D0902[1] = 0;
             }
 
             return "{\"status\":0,\"data\":[]}";
