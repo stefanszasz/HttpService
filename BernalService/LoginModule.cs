@@ -79,7 +79,7 @@ namespace BernalService
 
         public string SetDoor(dynamic @params)
         {
-            byte doorState = DoorsStatuses[@params.key].D0802;
+            int doorState = DoorsStatuses[@params.key].D0802;
 
             switch (doorState)
             {
