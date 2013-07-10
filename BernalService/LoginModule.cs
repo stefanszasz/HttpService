@@ -46,7 +46,7 @@ namespace BernalService
 
             Post["/bernal_gta/{key}/hostcontroller/set/relay"] = SetRelay;
 
-            Post["/bernal_gta/{key}/hostcontroller/set/relay"] = SetDoor;
+            Post["/bernal_gta/{key}/hostcontroller/set/door"] = SetDoor;
         }
 
         public string Root(dynamic @params)
