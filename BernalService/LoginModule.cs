@@ -25,6 +25,12 @@ namespace BernalService
                 doorStatus2.D0902[1] = 0;
 
                 DoorsStatuses.Add("1321312", doorStatus2);
+
+                DoorStatus doorStatus3 = new DoorStatus();
+                doorStatus3.D0902[0] = 0;
+                doorStatus3.D0902[1] = 0;
+
+                DoorsStatuses.Add("666666", doorStatus2);
             }
 
             Get["/"] = Root;
@@ -67,7 +73,7 @@ namespace BernalService
 
         public string DoorList(dynamic @params)
         {
-            return "{\"Addresses\":[{\"Key\": 11223344,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Hofeinfahrt \",\"Comment\": \"G501-D\"}},{\"Key\": 1321312,\"Value\":{\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Haupttor \",\"Comment\": \"G501-D\"}}]}";
+            return "{\"Addresses\": [{\"Key\": 11223344,\"Value\": {\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Hofeinfahrt \",\"Comment\": \"G501-D\"}},{\"Key\": 1321312,\"Value\": {\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Goethe Straße 7; 12345 Mustern\",\"Name\": \" Fleischerei Haupttor \",\"Comment\": \"G501-D\"}},{\"Key\": 666666,\"Value\": {\"__type\": \"GTAInfo:#bernal.gta.RemoteControllerService\",\"Connection\": 1,\"Address\": \"Middle-earth to the East of Anduin\",\"Name\": \" Mordoor\",\"Comment\": \"My precious\"}}]}";
         }
 
         public string DoorStatus(dynamic @params)
