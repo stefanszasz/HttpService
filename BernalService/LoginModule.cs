@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using Nancy;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace BernalService
 {
@@ -89,25 +91,47 @@ namespace BernalService
 
             switch (doorState)
             {
-                case 0: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.CLOSED;
+                case 0: DoorsStatuses[@params.key].D0802 = 2; break;//return DoorStatuses.CLOSED;
                 case 1: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
-                case 2: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
+                case 2: DoorsStatuses[@params.key].D0802 = 4; break;//return DoorStatuses.OPENING;
                 case 3: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
                 case 4: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
                 case 5: DoorsStatuses[@params.key].D0802 = 6; break;//return DoorStatuses.OPEN;
                 case 6: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
-                case 7: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
+                case 7: DoorsStatuses[@params.key].D0802 = 4; break;//return DoorStatuses.CLOSING;
                 case 8: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
-                case 9: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
+                case 9: DoorsStatuses[@params.key].D0802 = 4; break;//return DoorStatuses.CLOSING;
                 case 11: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
                 case 12: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.VENTILATING;
                 case 13: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
                 case 14: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
                 case 15: break; //return DoorStatuses.REVERSEING;
                 case 16: break; //return DoorStatuses.LEARNING;
-                default: break;
+                default: break; //return DoorStatuses.ERROR;
             }
 
+            if (DoorsStatuses[@params.key].D0802 == 2 || DoorsStatuses[@params.key].D0802 == 1)
+            {
+                var openDoorAfterSomeTime = new Task(() =>
+                {
+                    Thread.Sleep(5000);
+                    DoorsStatuses[@params.key].D0802 = 5;
+                });
+                openDoorAfterSomeTime.Start();
+            }
+
+            if (DoorsStatuses[@params.key].D0802 == 6 || 
+                DoorsStatuses[@params.key].D0802 == 7 ||
+                DoorsStatuses[@params.key].D0802 == 8 ||
+                DoorsStatuses[@params.key].D0802 == 9)
+            {
+                var closeDoorAfterSomeTime = new Task(() =>
+                {
+                    Thread.Sleep(5000);
+                    DoorsStatuses[@params.key].D0802 = 0;
+                });
+                closeDoorAfterSomeTime.Start();
+            }
             return "{ \"status\":0,\"data\":[] }";
         }
 
