@@ -13,7 +13,7 @@ namespace BernalService
             try
             {
                 string localIp = LocalIpAddress();
-                var nancyHost = new NancyHost(new Uri("http://" + localIp + ":990"));
+                var nancyHost = new NancyHost(new Uri("https://" + localIp + ":990"));
                 nancyHost.Start();
 
                 Console.WriteLine("Server started!");

@@ -18,6 +18,7 @@ namespace BernalService
 
         private ElapsedEventHandler openingDelegate;
         private ElapsedEventHandler closingDelegate;
+        private int doorOpeningTimeInSeconds = 6;
 
         public LoginModule()
         {
@@ -43,9 +44,9 @@ namespace BernalService
                 DoorsStatuses.Add("666666", doorStatus2);
 
                 //door opening & closing default times
-                doorTimes["11223344"] = 12;
-                doorTimes["1321312"] = 12;
-                doorTimes["666666"] = 12;
+                doorTimes["11223344"] = doorOpeningTimeInSeconds;
+                doorTimes["1321312"] = doorOpeningTimeInSeconds;
+                doorTimes["666666"] = doorOpeningTimeInSeconds;
 
                 timer.Start();
                                              
@@ -177,7 +178,7 @@ namespace BernalService
             closingDelegate = delegate(Object o, ElapsedEventArgs e)
             {
                 doorTimes[key]++;
-                if (doorTimes[key] == 12)
+                if (doorTimes[key] == doorOpeningTimeInSeconds)
                 {
                     //t.Stop();
                     //doorTimes[key] = 12;
