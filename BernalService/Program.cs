@@ -20,7 +20,7 @@ namespace BernalService
 
                 var service = new RegisterService();
                 service.Name = "RemoteControllerService"+ Environment.MachineName;
-                service.RegType = "_ws._tcp,_printer,_sub";
+                service.RegType = "_ws._tcp,_remotec,_sub";
                 service.ReplyDomain = "local.";
                 service.Port = 990;
                 service.Register();
