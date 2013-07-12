@@ -13,14 +13,14 @@ namespace BernalService
             try
             {
                 string localIp = LocalIpAddress();
-                var nancyHost = new NancyHost(new Uri("http://" + localIp + ":990"));
+                var nancyHost = new NancyHost(new Uri("https://" + localIp + ":990"));
                 nancyHost.Start();
 
                 Console.WriteLine("Server started!");
 
                 var service = new RegisterService();
-                service.Name = "BernalService "+ Environment.MachineName;
-                service.RegType = "_ws._tcp";
+                service.Name = "RemoteControllerService"+ Environment.MachineName;
+                service.RegType = "_ws._tcp,_remotec,_sub";
                 service.ReplyDomain = "local.";
                 service.Port = 990;
                 service.Register();
