@@ -1,19 +1,27 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Nancy;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Threading;
+using System.Timers;
 
 namespace BernalService
 {
     public class LoginModule : NancyModule
     {
-        static readonly Dictionary<string, DoorStatus> DoorsStatuses = new Dictionary<string, DoorStatus>(2);
+        private static readonly Dictionary<string, DoorStatus> DoorsStatuses = new Dictionary<string, DoorStatus>(2);
+
+        private static readonly Dictionary<string, int> doorTimes = new Dictionary<string, int>(2);
+        
+        private static readonly System.Timers.Timer timer = new Timer(1000);
+
+        private ElapsedEventHandler openingDelegate;
+        private ElapsedEventHandler closingDelegate;
 
         public LoginModule()
         {
+
             if (!DoorsStatuses.ContainsKey("11223344"))
             {
                 DoorStatus doorStatus1 = new DoorStatus();
@@ -33,6 +41,14 @@ namespace BernalService
                 doorStatus3.D0902[1] = 0;
 
                 DoorsStatuses.Add("666666", doorStatus2);
+
+                //door opening & closing default times
+                doorTimes["11223344"] = 12;
+                doorTimes["1321312"] = 12;
+                doorTimes["666666"] = 12;
+
+                timer.Start();
+                                             
             }
 
             Get["/"] = Root;
@@ -87,54 +103,92 @@ namespace BernalService
 
         public string SetDoor(dynamic @params)
         {
-            int doorState = DoorsStatuses[@params.key].D0802;
-
+            string key = @params.key;
+            int doorState = DoorsStatuses[key].D0802;
+            
             switch (doorState)
             {
-                case 0: DoorsStatuses[@params.key].D0802 = 2; break;//return DoorStatuses.CLOSED;
-                case 1: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
-                case 2: DoorsStatuses[@params.key].D0802 = 4; break;//return DoorStatuses.OPENING;
-                case 3: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
-                case 4: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
-                case 5: DoorsStatuses[@params.key].D0802 = 6; break;//return DoorStatuses.OPEN;
-                case 6: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
-                case 7: DoorsStatuses[@params.key].D0802 = 4; break;//return DoorStatuses.CLOSING;
-                case 8: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.CLOSING;
-                case 9: DoorsStatuses[@params.key].D0802 = 4; break;//return DoorStatuses.CLOSING;
-                case 11: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.STOPED;
-                case 12: DoorsStatuses[@params.key].D0802 = 1; break;//return DoorStatuses.VENTILATING;
-                case 13: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
-                case 14: DoorsStatuses[@params.key].D0802 = 3; break;//return DoorStatuses.OPENING;
+                case 0: Opening(key); break;// DoorsStatuses[key].D0802 = 1; break;//return DoorStatuses.CLOSED;
+
+
+                case 1: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.OPENING to STOPED;
+                case 2: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.OPENING to STOPED;
+
+                case 3: Opening(key); break; //DoorsStatuses[key].D0802 = 1; //from DoorStatuses.STOPED to OPENING;
+
+                case 4: Opening(key); break; //DoorsStatuses[key].D0802 = 1; //from DoorStatuses.STOPED to OPENING;
+
+                case 5: Closing(key); break; //DoorsStatuses[key].D0802 = 6; //from DoorStatuses.OPEN to CLOSEING;
+
+                case 6: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
+                case 7: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
+                case 8: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
+                case 9: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
+
+                case 11: Opening(key); break; //DoorsStatuses[key].D0802 = 1; break;//from DoorStatuses.STOPED to OPENING;
+
+                case 12: Opening(key); break; //DoorsStatuses[key].D0802 = 1; break;//from DoorStatuses.VENTILATING to OPENING
+
+                case 13: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break;//from DoorStatuses.OPENING to STOPED;
+                case 14: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break;//from DoorStatuses.OPENING to STOPED;
+
                 case 15: break; //return DoorStatuses.REVERSEING;
                 case 16: break; //return DoorStatuses.LEARNING;
-                default: break; //return DoorStatuses.ERROR;
+                default: break;
             }
 
-            if (DoorsStatuses[@params.key].D0802 == 2 || DoorsStatuses[@params.key].D0802 == 1)
-            {
-                var openDoorAfterSomeTime = new Task(() =>
-                {
-                    Thread.Sleep(5000);
-                    DoorsStatuses[@params.key].D0802 = 5;
-                });
-                openDoorAfterSomeTime.Start();
-            }
-
-            if (DoorsStatuses[@params.key].D0802 == 6 || 
-                DoorsStatuses[@params.key].D0802 == 7 ||
-                DoorsStatuses[@params.key].D0802 == 8 ||
-                DoorsStatuses[@params.key].D0802 == 9)
-            {
-                var closeDoorAfterSomeTime = new Task(() =>
-                {
-                    Thread.Sleep(5000);
-                    DoorsStatuses[@params.key].D0802 = 0;
-                });
-                closeDoorAfterSomeTime.Start();
-            }
             return "{ \"status\":0,\"data\":[] }";
         }
 
+
+        void timer_Elapsed_Opening(object sender, ElapsedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void timer_Elapsed_Closing(object sender, ElapsedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Opening(string key)
+        {
+            DoorsStatuses[key].D0802 = 1; //set door status to OPENING
+
+            openingDelegate = delegate(Object o,ElapsedEventArgs e)
+                     {
+                         doorTimes[key]--;
+                         if (doorTimes[key]==0)
+                         {
+                             //t.Stop();
+                             //doorTimes[key] = 12;
+                             DoorsStatuses[key].D0802 = 5; //done opening; set to OPEN
+                             timer.Elapsed -= openingDelegate; //disconnect from handler
+                         }
+                     };
+
+            timer.Elapsed += openingDelegate;
+        }
+        
+        private void Closing(string key)
+        {
+            DoorsStatuses[key].D0802 = 6; //set door status to CLOSING
+
+            closingDelegate = delegate(Object o, ElapsedEventArgs e)
+            {
+                doorTimes[key]++;
+                if (doorTimes[key] == 12)
+                {
+                    //t.Stop();
+                    //doorTimes[key] = 12;
+                    DoorsStatuses[key].D0802 = 0; //done closing; set to CLOSED
+                    timer.Elapsed -= closingDelegate; //disconnect from handler
+                }
+            };
+
+            timer.Elapsed += closingDelegate;
+        }
+        
         public string SetLight(dynamic @params)
         {
             if (DoorsStatuses[@params.key].D0903[0] == 0 && DoorsStatuses[@params.key].D0903[1] == 0)
