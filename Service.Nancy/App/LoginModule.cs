@@ -77,7 +77,7 @@ namespace BernalService
 
         public string Root(dynamic @params)
         {
-            return "";
+            return "Merje";
         }
 
         public string Login(string userName, string password)

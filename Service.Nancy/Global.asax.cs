@@ -26,7 +26,7 @@ namespace Service.Nancy
             string localIp = LocalIpAddress();
           
             var service = new RegisterService();
-            service.Name = "RemoteControllerService" + Environment.MachineName;
+            service.Name = "rcs" + Environment.MachineName;
             service.RegType = "_ws._tcp,_remotec,_sub";
             service.ReplyDomain = "local.";
             service.Port = 8001;
