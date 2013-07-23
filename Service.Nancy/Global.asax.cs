@@ -26,11 +26,18 @@ namespace Service.Nancy
             string localIp = LocalIpAddress();
           
             var service = new RegisterService();
-            service.Name = "rcs" + Environment.MachineName;
+            service.Name = "RemoteControllerServiceI";
             service.RegType = "_ws._tcp,_remotec,_sub";
             service.ReplyDomain = "local.";
-            service.Port = 8001;
+            service.Port = 8000;
             service.Register();
+
+            var service2 = new RegisterService();
+            service2.Name = "RemoteControllerService";
+            service2.RegType = "_ws._tcp,_remotec,_sub";
+            service2.ReplyDomain = "local.";
+            service2.Port = 8000;
+            service2.Register();
         }
 
         public static string LocalIpAddress()

@@ -19,7 +19,7 @@ namespace BernalService
 
         private ElapsedEventHandler openingDelegate;
         private ElapsedEventHandler closingDelegate;
-        private int doorOpeningTimeInSeconds = 6;
+        private int doorOpeningTimeInSeconds = 10;
 
         public LoginModule()
         {
@@ -27,22 +27,22 @@ namespace BernalService
             if (!DoorsStatuses.ContainsKey("11223344"))
             {
                 DoorStatus doorStatus1 = new DoorStatus();
-                doorStatus1.D0902[0] = 0;
-                doorStatus1.D0902[1] = 0;
+                doorStatus1.D0902[0] = 1;
+                doorStatus1.D0902[1] = 1;
 
                 DoorsStatuses.Add("11223344", doorStatus1);
 
                 DoorStatus doorStatus2 = new DoorStatus();
-                doorStatus2.D0902[0] = 0;
-                doorStatus2.D0902[1] = 0;
+                doorStatus2.D0902[0] = 1;
+                doorStatus2.D0902[1] = 1;
 
                 DoorsStatuses.Add("1321312", doorStatus2);
 
                 DoorStatus doorStatus3 = new DoorStatus();
-                doorStatus3.D0902[0] = 0;
-                doorStatus3.D0902[1] = 0;
+                doorStatus3.D0902[0] = 1;
+                doorStatus3.D0902[1] = 1;
 
-                DoorsStatuses.Add("666666", doorStatus2);
+                DoorsStatuses.Add("666666", doorStatus3);
 
                 //door opening & closing default times
                 doorTimes["11223344"] = doorOpeningTimeInSeconds;
@@ -54,13 +54,8 @@ namespace BernalService
             }
 
             Get["/"] = Root;
-            Post["/Login"] = param =>
-            {
-                var es = Login(param.userName, param.password);
-                var response = (Response)es;
-                response.ContentType = "application/json";
-                return response;
-            };
+
+            Post["/bernal_user/0/id"] = Login;
 
             Post["bernal_gta/0/gtas/get"] = DoorList;
 
@@ -80,14 +75,14 @@ namespace BernalService
             return "Merje";
         }
 
-        public string Login(string userName, string password)
+        public string Login(dynamic @params)
         {
             using (var reader = new StreamReader(Request.Body))
             {
                 string readToEnd = reader.ReadToEnd();
                 Console.WriteLine(readToEnd);
                 return
-                    "{ \"success\": true, \"user\": {\"Key\": 233, \"Value\": { \"Name\": \"someName\", \"Roles\": \"Role\", \"EMail\": \"email@email.com\", \"Phone\": \"122-334-44\", \"Address\": \"address\", \"Comment\": \"comment...\", \"WebAccess\": true } } }";
+                    "{ \"success\": true, \"user\": {\"Key\": 233, \"Value\": { \"Name\": \"someName\", \"Roles\": [\"Role\"], \"EMail\": \"email@email.com\", \"Phone\": \"122-334-44\", \"Address\": \"address\", \"Comment\": \"comment...\", \"WebAccess\": true } } }";
             }
         }
 
@@ -106,33 +101,33 @@ namespace BernalService
         public string SetDoor(dynamic @params)
         {
             string key = @params.key;
-            int doorState = DoorsStatuses[key].D0802;
+            int doorState = DoorsStatuses[key].D0802[0];
 
             switch (doorState)
             {
-                case 0: Opening(key); break;// DoorsStatuses[key].D0802 = 1; break;//return DoorStatuses.CLOSED;
+                case 0: Opening(key); break;// DoorsStatuses[key].D0802[0] = 1; break;//return DoorStatuses.CLOSED;
 
 
-                case 1: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.OPENING to STOPED;
-                case 2: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.OPENING to STOPED;
+                case 1: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802[0] = 3; } break; //from DoorStatuses.OPENING to STOPED;
+                case 2: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802[0] = 3; } break; //from DoorStatuses.OPENING to STOPED;
 
-                case 3: Opening(key); break; //DoorsStatuses[key].D0802 = 1; //from DoorStatuses.STOPED to OPENING;
+                case 3: Opening(key); break; //DoorsStatuses[key].D0802[0] = 1; //from DoorStatuses.STOPED to OPENING;
 
-                case 4: Opening(key); break; //DoorsStatuses[key].D0802 = 1; //from DoorStatuses.STOPED to OPENING;
+                case 4: Opening(key); break; //DoorsStatuses[key].D0802[0] = 1; //from DoorStatuses.STOPED to OPENING;
 
-                case 5: Closing(key); break; //DoorsStatuses[key].D0802 = 6; //from DoorStatuses.OPEN to CLOSEING;
+                case 5: Closing(key); break; //DoorsStatuses[key].D0802[0] = 6; //from DoorStatuses.OPEN to CLOSING;
 
-                case 6: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
-                case 7: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
-                case 8: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
-                case 9: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802 = 3; } break; //from DoorStatuses.CLOSING to STOPED
+                case 6: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802[0] = 3; } break; //from DoorStatuses.CLOSING to STOPED
+                case 7: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802[0] = 3; } break; //from DoorStatuses.CLOSING to STOPED
+                case 8: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802[0] = 3; } break; //from DoorStatuses.CLOSING to STOPED
+                case 9: { timer.Elapsed -= closingDelegate; DoorsStatuses[key].D0802[0] = 3; } break; //from DoorStatuses.CLOSING to STOPED
 
-                case 11: Opening(key); break; //DoorsStatuses[key].D0802 = 1; break;//from DoorStatuses.STOPED to OPENING;
+                case 11: Opening(key); break; //DoorsStatuses[key].D0802[0] = 1; break;//from DoorStatuses.STOPED to OPENING;
 
-                case 12: Opening(key); break; //DoorsStatuses[key].D0802 = 1; break;//from DoorStatuses.VENTILATING to OPENING
+                case 12: { doorTimes[key] = 5; Opening(key); } break; //DoorsStatuses[key].D0802[0] = 1; break;//from DoorStatuses.VENTILATING to CLOSING;
 
-                case 13: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break;//from DoorStatuses.OPENING to STOPED;
-                case 14: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802 = 3; } break;//from DoorStatuses.OPENING to STOPED;
+                case 13: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802[0] = 3; } break;//from DoorStatuses.OPENING to STOPED;
+                case 14: { timer.Elapsed -= openingDelegate; DoorsStatuses[key].D0802[0] = 3; } break;//from DoorStatuses.OPENING to STOPED;
 
                 case 15: break; //return DoorStatuses.REVERSEING;
                 case 16: break; //return DoorStatuses.LEARNING;
@@ -155,7 +150,9 @@ namespace BernalService
 
         private void Opening(string key)
         {
-            DoorsStatuses[key].D0802 = 1; //set door status to OPENING
+            DoorsStatuses[key].D0802[0] = 1; //set door status to OPENING
+
+            doorTimes[key] = 10;
 
             openingDelegate = delegate(Object o, ElapsedEventArgs e)
             {
@@ -164,7 +161,26 @@ namespace BernalService
                 {
                     //t.Stop();
                     //doorTimes[key] = 12;
-                    DoorsStatuses[key].D0802 = 5; //done opening; set to OPEN
+                    DoorsStatuses[key].D0802[0] = 5; //done opening; set to OPEN
+                    timer.Elapsed -= openingDelegate; //disconnect from handler
+                }
+            };
+
+            timer.Elapsed += openingDelegate;
+        }
+
+        private void OpeningToVentilatingPosition(string key)
+        {
+            DoorsStatuses[key].D0802[0] = 1; //set door status to OPENING
+
+            doorTimes[key] = 5;
+
+            openingDelegate = delegate(Object o, ElapsedEventArgs e)
+            {
+                doorTimes[key]--;
+                if (doorTimes[key] == 0)
+                {
+                    DoorsStatuses[key].D0802[0] = 12; //done opening; set to VENTILATING
                     timer.Elapsed -= openingDelegate; //disconnect from handler
                 }
             };
@@ -174,7 +190,9 @@ namespace BernalService
 
         private void Closing(string key)
         {
-            DoorsStatuses[key].D0802 = 6; //set door status to CLOSING
+            DoorsStatuses[key].D0802[0] = 6; //set door status to CLOSING
+
+            doorTimes[key] = 0;
 
             closingDelegate = delegate(Object o, ElapsedEventArgs e)
             {
@@ -183,13 +201,34 @@ namespace BernalService
                 {
                     //t.Stop();
                     //doorTimes[key] = 12;
-                    DoorsStatuses[key].D0802 = 0; //done closing; set to CLOSED
+                    DoorsStatuses[key].D0802[0] = 0; //done closing; set to CLOSED
                     timer.Elapsed -= closingDelegate; //disconnect from handler
                 }
             };
 
             timer.Elapsed += closingDelegate;
         }
+
+        //private void ClosingFromVentilatig(string key)
+        //{
+        //    doorOpeningTimeInSeconds = 5;
+
+        //    DoorsStatuses[key].D0802[0] = 6; //set door status to CLOSING
+
+        //    closingDelegate = delegate(Object o, ElapsedEventArgs e)
+        //    {
+        //        doorTimes[key]++;
+        //        if (doorTimes[key] == doorOpeningTimeInSeconds)
+        //        {
+        //            DoorsStatuses[key].D0802[0] = 0; //done closing; set to CLOSED
+        //            timer.Elapsed -= closingDelegate; //disconnect from handler
+        //        }
+        //    };
+
+        //    timer.Elapsed += closingDelegate;
+        //}
+
+
 
         public string SetLight(dynamic @params)
         {
@@ -231,11 +270,18 @@ namespace BernalService
             {
                 DoorsStatuses[@params.key].D0902[0] = 1;
                 DoorsStatuses[@params.key].D0902[1] = 1;
+
+                doorOpeningTimeInSeconds = 5;
+
+                Opening(@params.key);
             }
             else
             {
                 DoorsStatuses[@params.key].D0902[0] = 0;
                 DoorsStatuses[@params.key].D0902[1] = 0;
+
+                OpeningToVentilatingPosition(@params.key);
+
             }
 
             return "{\"status\":0,\"data\":[]}";

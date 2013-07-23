@@ -172,7 +172,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52609</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:8001</IISUrl>
+          <IISUrl>https://localhost:8000</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
